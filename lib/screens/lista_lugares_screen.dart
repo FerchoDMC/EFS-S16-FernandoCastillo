@@ -34,7 +34,7 @@ class _ListaLugaresScreenState extends State<ListaLugaresScreen> {
             padding: EdgeInsets.only(bottom: 4),
             child: Text(
               estudianteNombre,
-              style: TextStyle(fontSize: 12, color: Color.fromARGB(179, 255, 255, 255)),
+              style: TextStyle(fontSize: 12, color: Color.fromARGB(255, 0, 225, 255)),
             ),
           ),
         ),
