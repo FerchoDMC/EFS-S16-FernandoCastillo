@@ -11,8 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
 // Coordenadas fijas del campus UIDE Loja (referencia para el feature).
-const double campusLat = -4.0079;
-const double campusLng = -79.2113;
+const double campusLat = -3.971064262455292;
+const double campusLng = -79.19874761568893;
 
 class UbicacionScreen extends StatefulWidget {
   const UbicacionScreen({super.key});
@@ -63,6 +63,16 @@ class _UbicacionScreenState extends State<UbicacionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double? distanciaMetros;
+    if (_posicionActual != null) {
+      distanciaMetros = Geolocator.distanceBetween(
+        _posicionActual!.latitude,
+        _posicionActual!.longitude,
+        campusLat,
+        campusLng,
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text('Mi ubicación')),
       body: Padding(
@@ -78,11 +88,40 @@ class _UbicacionScreenState extends State<UbicacionScreen> {
                     style: const TextStyle(fontSize: 16),
                   ),
             const SizedBox(height: 24),
-            // TODO(feature): usa Geolocator.distanceBetween() para calcular
-            // la distancia entre _posicionActual y (campusLat, campusLng).
-            // Si la distancia es menor a 500 metros, muestra un mensaje o
-            // ícono indicando "Estás cerca del campus UIDE".
-            const Text('(Aquí debe aparecer el mensaje de proximidad)'),
+            // Nota del autor: Calcule la distancia en metros entre la ubicación actual 
+            //y las coordenadas del campus UIDE usando Geolocator.distanceBetween(), y si 
+            //es menor a 500m muestro la alerta de proximidad.
+            if (_posicionActual != null && distanciaMetros != null) ...[
+              if (distanciaMetros < 500)
+                Card(
+                  color: Colors.green.shade50,
+                  elevation: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.school, color: Colors.green),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Estás cerca del campus UIDE (${distanciaMetros.toStringAsFixed(0)} m)',
+                            style: const TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else
+                Text(
+                  'Distancia al campus UIDE: ${distanciaMetros.toStringAsFixed(0)} metros',
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+            ],
           ],
         ),
       ),
